@@ -231,6 +231,9 @@ namespace IPMI
     inline const command_t get_capabilities(void)
     { return std::make_pair(NETFUN_APP, 0x36); }
 
+    inline const command_t master_readwrite(void)
+    { return std::make_pair(NETFUN_APP, 0x52); }
+
 
     // Chassis messages
     inline const command_t chassis_power_off(void)

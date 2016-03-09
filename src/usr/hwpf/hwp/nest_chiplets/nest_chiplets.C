@@ -58,6 +58,8 @@
 //  MVPD
 #include <devicefw/userif.H>
 #include <vpd/mvpdenums.H>
+#include <ipmi/ipmiif.H>
+
 
 #include <config.h>
 
@@ -1743,7 +1745,40 @@ errlHndl_t computeProcPcieConfigAttrs(
             effectiveLaneSwap[iop] = laneSwap;
         }
 #endif
+   uint8_t riser_id = 0 ;
+	errlHndl_t l_err = NULL;
+	
+	
+	size_t len = 4;
+	
+	//create request data buffer
+	uint8_t* data = new uint8_t[len];
+	
+	IPMI::completion_code cc = IPMI::CC_UNKBAD;
+	
+	data[0] = 0x3;  
+	data[1] = 0x70;  
+	data[2] = 0x1;  
+	data[3] = 0x1;  
+	l_err = IPMI::sendrecv(IPMI::master_readwrite(), cc, len, data);
+	
+	if( l_err == NULL )
+	{
+		if( cc == IPMI::CC_OK )
+		{
+		riser_id = data[0];
+		}
+		
+		delete[] data;
+	}
 
+
+       if((i_pProcChipTarget->getAttr<TARGETING::ATTR_HUID>()) == 0x50001 && (riser_id == 0xE) ){	   	
+		effectiveLaneMask[1][0] = 0xFFFF;
+	    effectiveLaneMask[1][1] = 0x0000;      
+          effectiveLaneSwap[1] = 0x0;
+       	}
+	   
         i_pProcChipTarget->setAttr<
             TARGETING::ATTR_PROC_PCIE_LANE_MASK>(effectiveLaneMask);
 
@@ -1796,6 +1831,11 @@ errlHndl_t computeProcPcieConfigAttrs(
         {
             iopConfig = laneConfigItr->laneConfig;
             phbActiveMask = laneConfigItr->phbActive;
+
+			if((i_pProcChipTarget->getAttr<TARGETING::ATTR_HUID>()) == 0x50001 && (riser_id == 0xE) ){
+	   	       iopConfig = 0 ;
+	           phbActiveMask = PHB0_MASK|PHB1_MASK;
+       	      }
 
             // Disable applicable PHBs
             phbActiveMask &= (~disabledPhbs);
