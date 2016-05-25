@@ -1084,19 +1084,64 @@ errlHndl_t backplaneIpmiFruInv::buildChassisInfoArea(
     return l_errl;
 }
 
+// Quick hexdigit to binary converter.
+// Hopefull someday to replaced by strtoul
+uint8_t aschex2bin(char c)
+{
+    if(c >= 'a' && c <= 'f')
+    {
+        c = c + 10 - 'a';
+    }
+    else if (c >= 'A' && c <= 'F')
+    {
+        c = c + 10 - 'A';
+    }
+    else if (c >= '0' && c <= '9')
+    {
+       c -= '0';
+    }
+    else return 0;// else it's not a hex digit, return 0
+
+    return c;
+}
+
+
 errlHndl_t backplaneIpmiFruInv::buildBoardInfoArea(
                                               std::vector<uint8_t> &io_data)
 {
     errlHndl_t l_errl = NULL;
+	std::vector<uint8_t> oem_data; //jim052316
+	uint8_t i, data1, data2, data3;//jim052316
 
     do {
         //Set formatting data that goes at the beginning of the record
         preFormatProcessing(io_data, true);
 
+        l_errl = addVpdData(oem_data, PVPD::VNDR, PVPD::IN, true);
+        if (l_errl) { break; }
+
+		for (i=0; i < oem_data.size(); i++)
+		TRACFCOMP(g_trac_ipmi,"Jimdebug board VNDR:IN data is 0x%x", oem_data[i]);
+
+		data1 = (aschex2bin(oem_data[5]) << 4) | aschex2bin(oem_data[6]);//jim052416
+		data2 = (aschex2bin(oem_data[3]) << 4) | aschex2bin(oem_data[4]);
+		data3 = (aschex2bin(oem_data[1]) << 4) | aschex2bin(oem_data[2]);  
+
+		
+		TRACFCOMP(g_trac_ipmi,"Jimdebug push data1 is 0x%x", data1);
+		TRACFCOMP(g_trac_ipmi,"Jimdebug push data2 is 0x%x", data2);
+		TRACFCOMP(g_trac_ipmi,"Jimdebug push data3 is 0x%x", data3);
+
+		
+        io_data.push_back(data1); 
+        io_data.push_back(data2);
+        io_data.push_back(data3);
+
+
         //Set MFG Date/Time - Blank
-        io_data.push_back(0);
-        io_data.push_back(0);
-        io_data.push_back(0);
+        //io_data.push_back(0x5E); //jim52016
+        //io_data.push_back(0x9A);
+        //io_data.push_back(0xA3);
 
         //Set Vendor Name - ascii formatted data
         l_errl = addVpdData(io_data, PVPD::OPFR, PVPD::VN, true);
