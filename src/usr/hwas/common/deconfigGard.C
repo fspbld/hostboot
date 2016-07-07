@@ -980,8 +980,25 @@ Target * findPartnerForMcs(const Target *i_startMcs)
     // Declare partner MCS CHIP_UNIT
     ATTR_CHIP_UNIT_type partnerMcsUnit = 0;
 
+	// Add temp code to handle different MCS pairing
+	if (startMcsUnit == 0)
+	{
+		partnerMcsUnit = 4;
+	}
+	else if (startMcsUnit == 1)
+	{
+		partnerMcsUnit = 5;
+	}
+	else if (startMcsUnit == 4)
+	{
+		partnerMcsUnit = 0;
+	}
+	else if (startMcsUnit == 5)
+	{
+		partnerMcsUnit = 1;
+	}
     // If CHIP_UNIT is even, its partner will be the next MCS
-    if (!(startMcsUnit % 2))
+    else if (!(startMcsUnit % 2))
     {
         partnerMcsUnit = startMcsUnit + 1;
     }
