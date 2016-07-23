@@ -1025,6 +1025,8 @@ void getApssMessageData(uint8_t* o_data,
     ATTR_ADC_CHANNEL_OFFSETS_type offset;
     sys->tryGetAttr<ATTR_ADC_CHANNEL_OFFSETS>(offset);
 
+    TMGT_INF("getApssMessageData: gain is %d, offset is %d", gain[15], offset[15]); //jim
+
     CPPASSERT(sizeof(function) == sizeof(ground));
     CPPASSERT(sizeof(function) == sizeof(gain));
     CPPASSERT(sizeof(function) == sizeof(offset));

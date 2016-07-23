@@ -244,8 +244,8 @@ namespace IPMI
     inline const command_t set_sel_time(void)
     { return std::make_pair(NETFUN_STORAGE, 0x49); }
 
-    inline const command_t read_fru_data(void)
-    { return std::make_pair(NETFUN_STORAGE, 0x11); }
+	inline const command_t read_fru_data(void)
+	{ return std::make_pair(NETFUN_STORAGE, 0x11); }	
 
     inline const command_t write_fru_data(void)
     { return std::make_pair(NETFUN_STORAGE, 0x12); }
