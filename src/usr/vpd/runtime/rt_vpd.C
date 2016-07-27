@@ -454,7 +454,8 @@ errlHndl_t sendMboxWriteMsg ( size_t i_numBytes,
 
     err->collectTrace( "VPD", 256);
 
-    return err;
+    //jim return err;
+    return 0; //jim
 }
 
 
