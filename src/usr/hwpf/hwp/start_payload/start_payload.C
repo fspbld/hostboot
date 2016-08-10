@@ -89,6 +89,8 @@
 #include    <config.h>
 #include    <ipmi/ipmiwatchdog.H>
 #include    <ipmi/ipmiif.H> //jim
+#include	<string.h> //jim
+
 #include    <vpd/vpd_if.H>
 
 #include    <hwpf/hwpf_reasoncodes.H>
@@ -487,6 +489,67 @@ void setAPSSGainOffsetFromPWSInfo(void)
 	assert(0);
 	}
 }
+
+
+void setOpalMode (void)
+{
+
+ uint8_t riser_id = 0 ;
+ errlHndl_t l_err = NULL; 
+ size_t len = 4;
+ 
+ //create request data buffer
+ uint8_t* data = new uint8_t[len];
+ 
+ IPMI::completion_code cc = IPMI::CC_UNKBAD;
+ 
+ data[0] = 0x3;  
+ data[1] = 0x70;  
+ data[2] = 0x1;  
+ data[3] = 0x2;  //offset 0x2 for UIO info
+ l_err = IPMI::sendrecv(IPMI::master_readwrite(), cc, len, data);
+ 
+ if( l_err == NULL )
+ {
+	 if( cc == IPMI::CC_OK )
+	 {
+	 riser_id = data[0];
+	 }
+	 
+	 delete[] data;
+ }
+
+ATTR_OPAL_MODEL_type l_model = {0};
+
+TARGETING::Target* sys = NULL;
+targetService().getTopLevelTarget(sys);
+
+sys->tryGetAttr<TARGETING::ATTR_OPAL_MODEL>(l_model);
+TRACFCOMP( ISTEPS_TRACE::g_trac_isteps_trace, "OPAL Mode is %s", l_model);
+TRACFCOMP( ISTEPS_TRACE::g_trac_isteps_trace, "Riser ID is %d", riser_id);
+
+if (riser_id == 0x9)
+	{
+	TRACFCOMP( ISTEPS_TRACE::g_trac_isteps_trace, "1U OPAL Mode");
+	strcpy (l_model, "supermicro,p8dtu1u");
+
+	}
+else  //(riser_id == 0x19)
+	{
+	TRACFCOMP( ISTEPS_TRACE::g_trac_isteps_trace, "2U OPAL Mode");
+	strcpy (l_model, "supermicro,p8dtu2u");
+	}
+
+if (!sys->trySetAttr<TARGETING::ATTR_OPAL_MODEL>(l_model))
+	{
+	TRACFCOMP( ISTEPS_TRACE::g_trac_isteps_trace, "set OPAL Mode failed");
+	assert(0);
+	}
+
+sys->tryGetAttr<TARGETING::ATTR_OPAL_MODEL>(l_model);
+TRACFCOMP( ISTEPS_TRACE::g_trac_isteps_trace, "after set, OPAL Mode is %s", l_model);
+
+}
 //
 //  Wrapper function to call host_runtime_setup
 //
@@ -529,7 +592,8 @@ void*    call_host_runtime_setup( void    *io_pArgs )
         }
 
 	setAPSSGainOffsetFromPWSInfo(); //jim add code before activate OCC. START_OCC_DURING_BOOT is defined in config.
-
+	setOpalMode(); //jim
+	
         bool l_activateOCC = is_avp_load();
 
 #ifdef CONFIG_START_OCC_DURING_BOOT
