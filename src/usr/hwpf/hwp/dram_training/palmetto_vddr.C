@@ -168,6 +168,7 @@ static errlHndl_t for_each_vddr_domain_with_functional_memory(
     std::sort(l_membufTargetList.begin(), l_membufTargetList.end(),
         compareTargetsGpioInfos);
 
+/*
     // Prune out targets with non-unique GPIO info
     std::vector<TARGETING::TargetHandle_t>::iterator
         pInvalidEntries = std::unique(
@@ -175,6 +176,7 @@ static errlHndl_t for_each_vddr_domain_with_functional_memory(
             l_membufTargetList.end(),
             areTargetsGpioInfoEqual);
     l_membufTargetList.erase(pInvalidEntries,l_membufTargetList.end());
+*/
 
     // Invoke callback for one Centaur per unique VDDR domain
     for (TargetHandleList::iterator
@@ -274,6 +276,7 @@ static errlHndl_t pca95xGpioWriteBit(TARGETING::Target * i_target,
                            i_val);
 
     // Configure gpio bit as output (if necessary).
+/*    
     if(!err)
     {
         err = pca95xGpioSetBit(i_target,
@@ -281,6 +284,7 @@ static errlHndl_t pca95xGpioWriteBit(TARGETING::Target * i_target,
                                i_gpio_pin,
                                PCA95X_GPIO_CONFIG_OUTPUT);
     }
+*/
 
     return err;
 }
