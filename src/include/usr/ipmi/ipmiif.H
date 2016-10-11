@@ -282,7 +282,7 @@ namespace IPMI
     { return std::make_pair(NETFUN_IBM, 0x07); }
 
     inline const command_t pnor_response(void)
-    { return std::make_pair(NETFUN_IBM, 0x08); }
+	{ return std::make_pair(NETFUN_IBM, 0x07); }
 
     // $TODO RTC:123256 - need to add code to get dcmi capabilities
     // This is a dcmi message used to request the
