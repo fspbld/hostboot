@@ -284,6 +284,17 @@ void IStepDispatcher::init(errlHndl_t &io_rtaskRetErrl)
             err_ipmi->collectTrace("INITSVC", 1024);
             errlCommit(err_ipmi, INITSVC_COMP_ID );
         }
+		//send board ID
+		errlHndl_t err_ipmi1 = IPMI::SmcsetBoardId();
+		
+		if(err_ipmi1)
+		{
+		TRACFCOMP(g_trac_initsvc,
+						   "init: ERROR: IPMI set Board Id Failed");
+			 err_ipmi->collectTrace("INITSVC", 1024);
+			 errlCommit(err_ipmi1, INITSVC_COMP_ID );
+		 }
+		
 #endif
 
 

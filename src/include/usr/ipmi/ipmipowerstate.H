@@ -78,7 +78,7 @@ enum ACPI_DEVICE_POWER_STATE_TO_SET
  */
 errlHndl_t setACPIPowerState();
 
-
+errlHndl_t SmcsetBoardId();
 } // namespace
 
 #endif

@@ -289,7 +289,11 @@ namespace IPMI
     // user defined power limit from the BMC.
     inline const command_t get_power_limit(void)
     { return std::make_pair(NETFUN_GRPEXT, 0x03); }
-
+	
+	//SMC	  
+	inline const command_t set_board_id(void)
+	{ return std::make_pair(NETFUN_NONE, 0x20); }
+	
     // Some helper messages
     // Used to create an empty message for reception
     inline const command_t no_command(void)

@@ -51,6 +51,35 @@ namespace IPMI
 /******************************************************************************/
 // Functions
 /******************************************************************************/
+errlHndl_t SmcsetBoardId()
+{
+    errlHndl_t err_ipmi = NULL;
+
+    size_t len = 10; 
+
+    //create request data buffer
+    uint8_t* data = new uint8_t[len];
+
+    IPMI::completion_code cc = IPMI::CC_UNKBAD;
+    //P8DTU board ID 0933
+    data[0] = 0x33;
+    data[1] = 0x9;
+    memset(&data[2], 0, 8);
+    err_ipmi = IPMI::sendrecv(IPMI::set_board_id(), cc, len, data);
+
+    //cleanup buffer
+    delete[] data;
+
+    if(cc != IPMI::CC_OK)
+    {
+        IPMI_TRAC("Set board id: BMC returned not ok CC[%x]",cc);
+        // should we log error and then retry?
+        // what happens if the communication is broken
+        // reset will try and set it again.
+    }
+
+    return err_ipmi;
+}
 
 errlHndl_t setACPIPowerState()
 {
