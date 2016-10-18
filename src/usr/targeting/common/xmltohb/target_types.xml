@@ -681,7 +681,7 @@
     </attribute>
     <attribute>
         <id>DEFAULT_PROC_MODULE_NEST_FREQ_MHZ</id>
-        <default>2400</default>
+        <default>2000</default>
     </attribute>
 </targetType>
 

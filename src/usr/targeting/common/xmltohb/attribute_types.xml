@@ -15890,7 +15890,7 @@ firmware notes: Platforms should initialize this attribute to AUTO (0)</descript
     <simpleType>
         <enumeration>
             <id>MRW_NEST_CAPABLE_FREQUENCIES_SYS</id>
-            <default>UNSUPPORTED_FREQ</default>
+            <default>2000_MHZ_OR_2400_MHZ</default>
         </enumeration>
     </simpleType>
     <persistency>non-volatile</persistency>
