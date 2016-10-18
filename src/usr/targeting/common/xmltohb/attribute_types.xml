@@ -13812,7 +13812,7 @@ firmware notes: Platforms should initialize this attribute to AUTO (0)</descript
     </description>
     <simpleType>
         <uint8_t>
-        <default>1</default>
+        <default>0</default>
         </uint8_t>
     </simpleType>
     <persistency>non-volatile</persistency>
