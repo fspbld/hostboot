@@ -1200,7 +1200,7 @@
     </enumerator>
     <enumerator>
         <name>TPM_REQUIRED</name>
-        <value>0xFFFF</value>
+        <value>0xCC03</value>
     </enumerator>
 </enumerationType>
 
