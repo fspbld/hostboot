@@ -287,6 +287,7 @@ enum
 PWS_1600 = 0,
 PWS_1000 = 1,
 PWS_1200 = 2,
+PWS_1300 = 3,
 PWS_UNKNOWN = 0xFE,
 };
 
@@ -382,6 +383,7 @@ uint8_t getPSUFRUFromIPMICommands(void)
 	uint8_t pws1600[] = {'P','W','S','-','1','K','6','2','A','-','1','R'};
 	uint8_t pws1000[] = {'P','W','S','-','1','K','0','2','A','-','1','R'};
 	uint8_t pws1200[] = {'P','W','S','-','1','K','2','2','A','-','1','R'};
+	uint8_t pws1300[] = {'P','W','S','-','1','K','3','0','D','-','1','R'};
 
 	//code to calculate product part number size and offset. should use structure. refer to FRU spec.		
 	product_info_offset = frudata[4] * 8;
@@ -407,6 +409,10 @@ uint8_t getPSUFRUFromIPMICommands(void)
 		for (uint8_t i = 0; pws1200[i] == frudata[fru_offset + i] ; i ++)
 			if (i == 11)
 			powerSupplyFru = PWS_1200;
+
+		for (uint8_t i = 0; pws1300[i] == frudata[fru_offset + i] ; i ++)
+			if (i == 11)
+			powerSupplyFru = PWS_1300;
 	}
 	else	
 		powerSupplyFru = PWS_UNKNOWN;
@@ -463,6 +469,11 @@ void setAPSSGainOffsetFromPWSInfo(void)
 
 	case PWS_1200: //PWS-1K22A-1R (1200W):
 	gain[TOTAL_SYSTEM_POWER] = 50000; 
+	offset[TOTAL_SYSTEM_POWER] = 0;
+	break;
+
+	case PWS_1300: //PWS-1K30D-1R (1300W 48V AC):
+	gain[TOTAL_SYSTEM_POWER] = 51900; 
 	offset[TOTAL_SYSTEM_POWER] = 0;
 	break;
 
