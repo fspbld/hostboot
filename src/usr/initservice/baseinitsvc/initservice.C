@@ -5,7 +5,7 @@
 /*                                                                        */
 /* OpenPOWER HostBoot Project                                             */
 /*                                                                        */
-/* Contributors Listed Below - COPYRIGHT 2011,2015                        */
+/* Contributors Listed Below - COPYRIGHT 2011,2018                        */
 /* [+] International Business Machines Corp.                              */
 /*                                                                        */
 /*                                                                        */
@@ -866,6 +866,9 @@ void InitService::doShutdown(uint64_t i_status,
     nanosleep(0,TEN_CTX_SWITCHES_NS);
 
     TRACFCOMP(g_trac_initsvc, "doShutdown> Final status=%.16X",worst_status);
+
+    // Ensure all traces get flushed to the console
+    TRAC_FLUSH_BUFFERS();
 
     shutdown(worst_status,
              i_payload_base,
